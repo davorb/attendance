@@ -1,6 +1,7 @@
 ; Attendance
 ; (c) 2013 Davor Babic <davor@davor.se>
 
+(defvar *student-db* "students.db")
 (defvar *students* nil)
 (defvar *attendance* nil)
 
@@ -14,14 +15,14 @@
   (push name *students*))
 
 (defun save-student-db ()
-  (with-open-file (out "students.db"
+  (with-open-file (out *student-db*
                        :direction :output
                        :if-exists :supersede)
     (with-standard-io-syntax
         (print *students* out))))
 
 (defun load-student-db ()
-  (with-open-file (in "students.db")
+  (with-open-file (in *student-db*)
     (with-standard-io-syntax
       (setf *students* (read in)))))
 

@@ -14,7 +14,7 @@
   (push name *students*))
 
 (defun save-student-db ()
-  (with-open-file (out "students.db")
+  (with-open-file (out "students.db"
                        :direction :output
                        :if-exists :supersede)
     (with-standard-io-syntax
@@ -24,6 +24,11 @@
   (with-open-file (in "students.db")
     (with-standard-io-syntax
       (setf *students* (read in)))))
+
+(defun load-attendance (filename)
+  (with-open-file (in filename)
+    (with-standard-io-syntax
+      (setf *attendance* (read in)))))
 
 (defun prompt-attendance (name)
   (write name)

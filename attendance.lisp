@@ -15,21 +15,13 @@
   (push name *students*))
 
 (defun save-student-db ()
-  (with-open-file (out *student-db*
-                       :direction :output
-                       :if-exists :supersede)
-    (with-standard-io-syntax
-        (print *students* out))))
+  (save-file *student-db* *students*))
 
 (defun load-student-db ()
-  (with-open-file (in *student-db*)
-    (with-standard-io-syntax
-      (setf *students* (read in)))))
+  (load-file *student-db* *students*))
 
 (defun load-attendance (filename)
-  (with-open-file (in filename)
-    (with-standard-io-syntax
-      (setf *attendance* (read in)))))
+  (load-file filename *attendance*))
 
 (defun prompt-attendance (name)
   (write name)
@@ -45,11 +37,7 @@
     (format t "~{~a:~15t~a~%~}~%" record)))
 
 (defun save-attendance (filename)
-  (with-open-file (out filename
-                       :direction :output
-                       :if-exists :supersede)
-    (with-standard-io-syntax
-      (print *attendance* out))))
+  (save-file filename *attendance*))
 
 (defun mark-all-as-attending ()
   (dolist (student *students*)
@@ -59,3 +47,16 @@
   (setf *attendance* 
         (remove-if #'(lambda (x) (equal (getf x :name) name)) *attendance*))
   (add-record (new-record name nil)))
+
+(defmacro save-file (filename content)
+  `(with-open-file (out ,filename
+                        :direction :output
+                        :if-exists :supersede)
+     (with-standard-io-syntax
+       (print ,content out))))
+
+(defmacro load-file (filename var)
+  `(with-open-file (in ,filename)
+     (with-standard-io-syntax
+       (setf ,var (read in)))))
+
